@@ -1,4 +1,4 @@
-name: Build CursorCat v5
+name: Build CursorCat v5.2
 on:
   workflow_dispatch:
   push:
@@ -17,10 +17,10 @@ jobs:
         run: |
           set /p VS_PATH=<vs_path.txt
           call "%VS_PATH%\VC\Auxiliary\Build\vcvars64.bat"
-          cl /std:c++17 /O2 /EHsc /DUNICODE /D_UNICODE main.cpp /Fe:CursorCat.exe /link /SUBSYSTEM:WINDOWS d3d11.lib dxgi.lib d3dcompiler.lib shell32.lib user32.lib gdi32.lib
+          cl /std:c++17 /O2 /EHsc /utf-8 /DUNICODE /D_UNICODE main.cpp /Fe:CursorCat.exe /link /SUBSYSTEM:WINDOWS d3d11.lib dxgi.lib d3dcompiler.lib shell32.lib user32.lib gdi32.lib
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: CursorCat-v5
+          name: CursorCat-v5.2
           path: CursorCat.exe
           if-no-files-found: error
