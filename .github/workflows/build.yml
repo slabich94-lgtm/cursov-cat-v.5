@@ -1,0 +1,26 @@
+name: Build CursorCat v5
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Locate MSVC
+        shell: cmd
+        run: call "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath > vs_path.txt
+      - name: Build
+        shell: cmd
+        run: |
+          set /p VS_PATH=<vs_path.txt
+          call "%VS_PATH%\VC\Auxiliary\Build\vcvars64.bat"
+          cl /std:c++17 /O2 /EHsc /DUNICODE /D_UNICODE main.cpp /Fe:CursorCat.exe /link /SUBSYSTEM:WINDOWS d3d11.lib dxgi.lib d3dcompiler.lib shell32.lib user32.lib gdi32.lib
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CursorCat-v5
+          path: CursorCat.exe
+          if-no-files-found: error
